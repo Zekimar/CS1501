@@ -18,7 +18,7 @@ public class dlb{
       value = c;
     }
 	private void setValue(char v){
-	   value = v;
+	  value = v;
 	}
 
 	private boolean setChild(char c){
@@ -42,7 +42,6 @@ public class dlb{
 		return true;
 	}
 }
-
   public boolean add(String s){
     s = s + "$";
     Node n = root;
