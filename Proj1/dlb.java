@@ -17,31 +17,31 @@ public class dlb{
       child = null;
       value = c;
     }
-		private void setValue(char v){
-			value = v;
-		}
+	private void setValue(char v){
+	   value = v;
+	}
 
-		private boolean setChild(char c){
-			child = new Node(c);
-			return true;
-		}
-    private static boolean hasChild(Node n){
-			if (n.child == null){
-				return false;
-			}
-			return true;
-		}
-		private boolean setNext(char c){
-			next = new Node(c);
-			return true;
-		}
-		private static boolean hasNext(Node n){
-			if (n.next == null){
-				return false;
-			}
-			return true;
-		}
+	private boolean setChild(char c){
+    child = new Node(c);
+		return true;
+	}
+  private static boolean hasChild(Node n){
+    if (n.child == null){
+			return false;
+	  }
+		return true;
   }
+	private boolean setNext(char c){
+    next = new Node(c);
+    return true;
+	}
+	private static boolean hasNext(Node n){
+    if (n.next == null){
+      return false;
+		}
+		return true;
+	}
+}
 
   public boolean add(String s){
     s = s + "$";
@@ -106,7 +106,7 @@ public class dlb{
         }
       }
       if (n.next == null){
-        
+
       }
     }
     return prediction;
