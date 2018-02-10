@@ -23,48 +23,106 @@ part 2: implement rudimentary autocomplete for words
 */
 import java.io.*;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class ac_test{
 
   public static void main(String[] args){
     dlb DLB = new dlb();
+    ArrayList<String> history = new ArrayList<String>();
     try{
       File f = new File("dictionary.txt");
+      File hist = new File("user_history.txt");
+      boolean check = hist.createNewFile();
+      if (!check){
+        //String[] history = hist.readLines();
+        //populate data structure for user history
+        Scanner input = new Scanner(hist);
+        while (input.hasNextLine()){
+          String s = input.nextLine();
+          s.replace("\n", "");
+          if (!history.contains(s)){
+            history.add(s);
+          }
+        }
+      }
       Scanner input = new Scanner(f);
-
       while (input.hasNextLine()){
         String s = input.nextLine();
         s = s.replace("\n", "");
         DLB.add(s);
       }
-      //System.out.println(DLB.contains("box"));
-      //System.out.println(DLB.contains("knife"));
+    }catch (IOException fnfe){
+      fnfe.printStackTrace();
+      System.out.println("Error: file not found");
+      System.exit(1);
+    }
+    String input = "0";
+    String word = "";
+    String[] output = new String[5];
+    int numWords = 0;
+    while (!input.equals("!")){
+      System.out.print("Enter a character: ");
+      Scanner s = new Scanner(System.in);
+      char c = s.next().charAt(0);
+      input = Character.toString(c);
+      if (Character.isDigit(c)){
+        int i = Integer.parseInt(input);
+        i--;
+        System.out.println("Word Completed: " + output[i]);
+        if (!history.contains(output[i])){
+          System.out.println("HIstory added: " + output[i]);
+          history.add(output[i]);
+        }
+        word = "";
+        output = new String[5];
+      }else if (input.equals("$")){
+        System.out.println("Word Completed: " + word);
+        if (!history.contains(word)){
+          history.add(word);
+        }
+        word = "";
+        output = new String[5];
+      }else if (!input.equals("!")){
+        long before = System.nanoTime();
+        word += input;
+        for (int i = 0; i < history.size(); i++){
+          String auto = history.get(i);
+          System.out.print(word + " auto: " + auto + "\n");
+          if (auto.startsWith(word) && numWords < 5){
+            System.out.println("added: " + auto);
+            output[numWords] = auto;
+            System.out.println(output[numWords]);
+            numWords++;
+          }
+        }
+        output = DLB.predict(output, word, numWords);
+        long after = System.nanoTime();
+        after -= before;
+        double d = after / 1000000000;
+        System.out.println("\nTime to completion: " + after);
+        System.out.println("Predictions: ");
+        for (int i = 0; i < 5; i++){
+          if (output[i] != null){
+            System.out.println((i + 1) + ": " + output[i]);
+          }
+        }
+        numWords = 0;
+      }
+      //System.out.println(word);
+    }
+    try{
+      File f = new File("user_history.txt");
+      PrintWriter p = new PrintWriter(f);
+      for (int i = 0; i < history.size(); i++){
+        p.println(history.get(i));
+      }
+      p.close();
     }catch (FileNotFoundException fnfe){
       fnfe.printStackTrace();
       System.out.println("Error: file not found");
       System.exit(1);
     }
-    char input = '0';
-    String word = "";
-    String[] output;
-    while (input != '!'){
-      System.out.print("Enter a character: ");
-      Scanner s = new Scanner(System.in);
-      input = s.next().charAt(0);
-      if (input.isDigit()){
-        word = output[(int)input];
-        System.out.println("Word Completed: " + word);
-        word = "";
-        output = new String[5];
-      }else if (input != '!'){
-        word += input;
-        output = DLB.predict(word);
-        for (int i = 0; i < 5; i++){
-          System.out.println((i + 1) + ": " + output[i]);
-        }
-      }
-
-      //System.out.println(word);
-    }
+    //add words for user history to file
   }
 }

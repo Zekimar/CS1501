@@ -1,11 +1,11 @@
 //KLG92 Feb. 2018 CS1501 spring 2018
-
+import java.util.ArrayList;
 
 public class dlb{
   private Node root;
 
   public dlb(){
-    root = new Node('0');
+    root = new Node('!');
   }
 
   private static class Node{
@@ -22,20 +22,20 @@ public class dlb{
     	value = v;
   }
 
-  private boolean setChild(char c){
-    	child = new Node(c);
-  return true;
-  }
+  // private boolean setChild(char c){
+  //   	child = new Node(c);
+  // return true;
+  // }
     private static boolean hasChild(Node n){
       if (n.child == null){
   return false;
     }
   return true;
     }
-  private boolean setNext(char c){
-      next = new Node(c);
-      return true;
-  }
+  // private boolean setNext(char c){
+  //     next = new Node(c);
+  //     return true;
+  // }
   private static boolean hasNext(Node n){
       if (n.next == null){
         return false;
@@ -51,14 +51,14 @@ public class dlb{
       char c = s.charAt(i);
       if (n.value == c){
         if (!Node.hasChild(n) && c != '$'){
-          n.setChild('0');
+          n.child = new Node('0');
         }
         n = n.child;
       }else{
-        if (n.value == '0'){
+        if (n.value == '0' || n.value == '!'){
           n.setValue(c);
         }else if (!Node.hasNext(n)){
-          n.setNext('0');
+          n.next = new Node(c);
           n = n.next;
         }else{
           n = n.next;
@@ -87,31 +87,64 @@ public class dlb{
     }
     return true;
   }
-  public String[] predict(String s){
-    String[] prediction = new String[5];
-    int numWords = 0;
-    String buffer = s;
-    Node n = findInput(s);
-    n = n.child;
 
+  public String[] predict(String[] prediction, String s, int numWords){
+    Node n = findInput(s);
+    ArrayList<Node> prevLevel = new ArrayList<Node>();
+    Boolean reversed = false;
+    prevLevel.add(n);
+    n = n.child;
+    String buf = s;
+    buf += n.value;
     while (numWords < 5){
-      if (n.value == '$'){
-        prediction[numWords] = buffer;
-        numWords++;
-        n = n.next;
-      }else{
-        n = n.child;
-        if (n != null){
-          buffer += n.value;
-        }
+      if (prevLevel.size() == 0){
+        return prediction;
       }
-      if (n.next == null){
+      //System.out.println(buf);
+      if (n.value != '$'){
+        if (n.child != null && !reversed){
+          prevLevel.add(n);
+          n = n.child;
+          buf += n.value;
+        }else if (n.next != null){
+          n = n.next;
+          buf = buf.substring(0, (buf.length() - 1));
+          buf += n.value;
+          reversed = false;
+        }else{
+          buf = buf.substring(0, (buf.length() - 1));
+          n = prevLevel.get((prevLevel.size() - 1));
+          prevLevel.remove(prevLevel.size() - 1);
+          reversed = true;
+        }
+      }else if (n.value == '$'){
+        buf = buf.replace("$", "");
+        boolean already = false;
+        if (contains(buf)){
+          for (String word: prediction){
+            if (word != null && word.equals(buf)){
+              already = true;
+            }
+          }
+          if (!already){
+            prediction[numWords] = buf;
+            numWords++;
+          }
+        }
+        if (n.next != null){
+          n = n.next;
+          buf += n.value;
+          reversed = false;
+        }else{
+          n = prevLevel.get((prevLevel.size() - 1));
+          prevLevel.remove(prevLevel.size() - 1);
+          reversed = true;
+        }
 
       }
     }
     return prediction;
   }
-
   public Node findInput(String s){
     Node n = root;
     for(char c: s.toCharArray()){
@@ -134,6 +167,9 @@ public class dlb{
     DLB.add("goodbye");
     System.out.println(DLB.contains("goodbye"));
     System.out.println(DLB.contains("HELLO"));
+    String s = "t";
+    String g = "tab";
+    System.out.println(g.startsWith(s));
   }
 
 }
