@@ -1,5 +1,0 @@
-I decided to use an arraylist to hold my user history.
-I used that because it was simple and all data structures that I
-researched would only sort Strings based on alphabetical order and not
-frequency. The runtime for populating the arraylist from the
-user_history file would be O(n).
