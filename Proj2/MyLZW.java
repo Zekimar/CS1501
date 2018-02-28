@@ -43,7 +43,10 @@ public class MyLZW {
             String s = st.longestPrefixOf(input);  // Find max prefix match s.
             BinaryStdOut.write(st.get(s), W);      // Print s's encoding.
             int t = s.length();
-            //increase codeword length && number of codewords
+            /** TODO: Monitor Mode:
+              Define old ratio when codebook is full
+              After that is new ratio
+            */
             if (code == L && W < 16){
               W++;
               L *= 2;
@@ -58,7 +61,6 @@ public class MyLZW {
             }
             if (t < input.length() && code < L)    // Add s to symbol table.
                 st.put(input.substring(0, t + 1), code++);
-            //TODO: else if code == l for modes?
             input = input.substring(t);            // Scan past s in input.
         }
         BinaryStdOut.write(R, W);
@@ -85,6 +87,11 @@ public class MyLZW {
             String s = st[codeword];
             if (i == codeword) s = val + val.charAt(0);   // special case hack
             if (i < L) st[i++] = val + s.charAt(0);
+            /** TODO: Monitor Mode:
+              Define old ratio when codebook is full
+              new ratio comes after that
+              etc
+            */
             if (i == L && W < 16){
               W++;
               L *= 2;
@@ -98,7 +105,6 @@ public class MyLZW {
               st[i++] = "";
               }
             }
-            //TODO: else if W == 16 for modes?
             val = s;
         }
         BinaryStdOut.close();
