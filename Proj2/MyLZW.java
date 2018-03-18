@@ -31,7 +31,10 @@ public class MyLZW {
     private static final int R = 256; // number of input chars
     private static int L = 512;       // initial number of codewords = 2^W
     private static int W = 9;         // codeword width
-
+    private static double inSize, outSize; //B&A size in bits
+    private static double oldRatio = -1;
+    private static double newRatio = -1;
+    private static double comparison = -1;
     public static void compress(char mode) {
         String input = BinaryStdIn.readString();
         TST<Integer> st = new TST<Integer>();
@@ -43,10 +46,14 @@ public class MyLZW {
             String s = st.longestPrefixOf(input);  // Find max prefix match s.
             BinaryStdOut.write(st.get(s), W);      // Print s's encoding.
             int t = s.length();
-            /** TODO: Monitor Mode:
-              Define old ratio when codebook is full
-              After that is new ratio
-            */
+            if (mode == 'm'){
+              outSize += W;
+              inSize += (t * 2 * 8);
+              if (oldRatio != -1){
+                newRatio = inSize / outSize;
+                comparison = oldRatio / newRatio;
+              }
+            }
             if (code == L && W < 16){
               W++;
               L *= 2;
@@ -58,6 +65,21 @@ public class MyLZW {
                 st.put("" + (char) i, i);
               }
               code = R+1;
+            }else if (mode == 'm' && code == L && W == 16){
+              if (oldRatio == -1){
+                oldRatio = inSize / outSize;
+              }
+              if (comparison > 1.100){
+                System.err.println("reset");
+                W = 9;
+                L = 512;
+                st = new TST<Integer>();
+                for (int i = 0; i < R; i++){
+                  st.put("" + (char) i, i);
+                }
+                code = R+1;
+                oldRatio = newRatio = comparison = -1;
+              }
             }
             if (t < input.length() && code < L)    // Add s to symbol table.
                 st.put(input.substring(0, t + 1), code++);
@@ -87,11 +109,14 @@ public class MyLZW {
             String s = st[codeword];
             if (i == codeword) s = val + val.charAt(0);   // special case hack
             if (i < L) st[i++] = val + s.charAt(0);
-            /** TODO: Monitor Mode:
-              Define old ratio when codebook is full
-              new ratio comes after that
-              etc
-            */
+            if (mode == 'm'){
+              inSize += (val.length() * 2 * 8);
+              outSize += W;
+              if (oldRatio != -1){
+                newRatio = inSize / outSize;
+                comparison = oldRatio / newRatio;
+              }
+            }
             if (i == L && W < 16){
               W++;
               L *= 2;
@@ -102,7 +127,21 @@ public class MyLZW {
               st = new String[L];
               for (i = 0; i < R; i++){
                   st[i] = "" + (char) i;
+              }
               st[i++] = "";
+            }else if (mode == 'm' && i == L && W == 16){
+              if (oldRatio == -1){
+                oldRatio = inSize / outSize;
+              }
+              if (oldRatio / newRatio > 1.1){
+                W = 9;
+                L = 512;
+                st = new String[L];
+                for (i = 0; i < R; i++){
+                  st[i] = "" + (char) i;
+                }
+                st[i++] = "";
+                oldRatio = newRatio = comparison = -1;
               }
             }
             val = s;
