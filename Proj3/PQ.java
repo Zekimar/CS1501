@@ -29,6 +29,10 @@ class PQ{
   }
 
   public boolean add(Car c){
+    if (price.ind.containsKey(c.getVin())){
+      System.out.println("\nerror vin already present");
+      return false;
+    }
     if (size == cars.length){
       resize();
     }
@@ -39,10 +43,15 @@ class PQ{
     return true;
   }
 
-  public void remove(String vin){
+  public boolean remove(String vin){
+    if (price.get(vin) == -1){
+      System.err.println("error could not find car of vin " + vin);
+      return false;
+    }
     cars[price.get(vin)] = null;
     price.remove(vin);
     mileage.remove(vin);
+    return true;
   }
 
   public Car getMileage(){
@@ -52,7 +61,7 @@ class PQ{
   public Car getMileage(String make, String model){
     int as = mileage.get(make, model);
     if (as == -1){
-      System.out.println("Could not find car of make/model");
+      System.out.println("error Could not find car of make/model");
       return null;
     }
     Car ans = cars[as];
@@ -65,7 +74,7 @@ class PQ{
   public Car getPrice(String make, String model){
     int as = price.get(make, model);
     if (as == -1){
-      System.out.println("could not find car of make/model");
+      System.out.println("error could not find car of make/model");
       return null;
     }
     Car ans = cars[as];
@@ -77,18 +86,30 @@ class PQ{
   }
 
   public boolean updatePrice(String s, int i){
+    if (price.get(s) == -1){
+      System.out.println("error Could not find car of vin" + s);
+      return false;
+    }
     cars[price.get(s)].setPrice(i);
     price.update(s, i);
     return true;
   }
 
   public boolean updateMileage(String s, int i){
+    if (price.get(s) == -1){
+      System.out.println("error Could not find car of vin" + s);
+      return false;
+    }
     cars[price.get(s)].setMileage(i);
     mileage.update(s, i);
     return true;
   }
 
   public boolean updateColor(String s, String color){
+    if (price.get(s) == -1){
+      System.out.println("error Could not find car of vin" + s);
+      return false;
+    }
     cars[price.get(s)].setColor(color);
     return true;
   }
@@ -139,16 +160,20 @@ class PQ{
     }
 
     private int get(String make, String model){
-      for (Node n: vals){
-        Car c = cars[n.carNum];
-        if (c.getMake().equals(make) && c.getModel().equals(model)){
-          return n.carNum;
+      for (int i = 0; i < vals.length; i++){
+        Node no = vals[i];
+        Car c = cars[no.carNum];
+        if (c.getModel().equals(model) && c.getMake().equals(make)){
+          return no.carNum;
         }
       }
       return -1;
     }
 
     private int get(String s){
+      if (!ind.containsKey(s)){
+        return -1;
+      }
       return vals[ind.get(s)].carNum;
     }
 
@@ -156,12 +181,20 @@ class PQ{
       return vals[0].carNum;
     }
 
-    private void update(String s, int i){
+    private boolean update(String s, int i){
+      if (!ind.containsKey(s)){
+        System.err.println("error Unable to find car of vin number " + s);
+        return false;
+      }
       vals[ind.get(s)].value = i;
       balance(ind.get(s), vals[ind.get(s)]);
+      return true;
     }
 
-    private void remove(String s){
+    private boolean remove(String s){
+      if (!ind.containsKey(s)){
+        return false;
+      }
       int p = ind.get(s);
       int left;
       int right;
@@ -192,6 +225,7 @@ class PQ{
           break;
         }
       }
+      return true;
     }
   }
 
