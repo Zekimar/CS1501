@@ -4,12 +4,19 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Comparator;
 import java.util.ArrayList;
+/**
+  takes in input that respresents a graph and performs analysis on it.
+  this graph represents internet servers with edges having bandwidth and
+  length. Edges can be copper or optical
+  latency = length / 230,000,000 for copper, 200,000,000 for optical.
+
+  @author Kevin Good KLG92
+
+*/
 
 class NetworkAnalysis{
   private static Graph g;
   public static void main(String[] args){
-    //Edge e = new Edge(false, 1, 1, 0, 1);
-    //System.out.println(e.length());
     if (args.length != 1){
       System.err.println("invalid number of command line args");
       System.exit(1);
@@ -23,7 +30,6 @@ class NetworkAnalysis{
       for (int j = 0; j < i; j++){
         graph[j] = new Vertex(j);
       }
-      //System.out.println(i);
       while(input.hasNextLine()){
         String[] parts = input.nextLine().split(" ");
         int end1 = Integer.parseInt(parts[0]);
@@ -34,8 +40,6 @@ class NetworkAnalysis{
         }
         int speed = Integer.parseInt(parts[3]);
         int length = Integer.parseInt(parts[4]);
-        //System.out.println(speed + " " + length + " " + end1 + " " + end2 + " " + isCopper);
-        //Edge e = new Edge(isCopper, speed, length, end1, end2);
         graph[end1].add(new Edge(isCopper, speed, length, end2));
         graph[end2].add(new Edge(isCopper, speed, length, end1));
       }
@@ -46,7 +50,6 @@ class NetworkAnalysis{
       System.exit(1);
     }
     System.out.println("Welcome to network analysis by KLG92");
-    //System.out.println(g.isCopperConnected());
     Scanner input = new Scanner(System.in);
     int choice = -1;
     while (choice != 6){
@@ -61,7 +64,6 @@ class NetworkAnalysis{
           System.out.println("Input vertex 2:");
           int vertex2 = input.nextInt();
           int bandwidth = g.lowestLatency(vertex1, vertex2);
-          //System.out.println("\n");
           System.out.println("\nBandwidth: "+ bandwidth + "\n");
           break;
         case 2:

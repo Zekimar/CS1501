@@ -2,7 +2,6 @@ class Edge implements Comparable<Edge>{
   private boolean isCopper;
   private int bandwidth;
   private int length;
-  //private int end1;
   private int end;
   private double latency;
 
@@ -11,14 +10,11 @@ class Edge implements Comparable<Edge>{
     this.bandwidth = bandwidth;
     this.length = length;
     this.end = end;
-    //this.end2 = end2;
     if (isCopper){
       this.latency = (double)this.length / 230000000;
     }else{
       this.latency = (double)this.length / 200000000;
     }
-    //System.out.println(this.latency);
-    //System.out.println(this.latency / 100000000);
   }
 
   @Override

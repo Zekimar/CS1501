@@ -61,7 +61,6 @@ class Graph{
   }
 
   public int lowestLatency(int v, int w){
-    //System.out.println(0.0 < Double.POSITIVE_INFINITY);
     ArrayList<Integer> path = new ArrayList<Integer>();
     if (!hasPath(v, w)){
       return -1;
@@ -85,23 +84,18 @@ class Graph{
         int end = e.getEnd();
         double dist = distTo[cur.getName()];
         dist += e.latency();
-        //System.out.println(distTo[end]);
         if (dist < distTo[end]){
-          //System.out.println("ayy");
           distTo[end] = dist;
           edgeTo[end] = cur.getName();
         }
         if (!visited[end]){
-          //System.out.println("added");
           neighbors.add(e);
         }
       }
       visited[cur.getName()] = true;
       cur = graph[neighbors.poll().getEnd()];
     }
-    // for (int i = 0; i < graph.length; i++){
-    //   System.out.println("dist " + distTo[i] + " edge " + edgeTo[i]);
-    // }
+
     cur = graph[w];
     while (cur != graph[v]){
       path.add(cur.getName());
