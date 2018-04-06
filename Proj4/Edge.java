@@ -17,7 +17,7 @@ class Edge implements Comparable<Edge>{
     }else{
       this.latency = (double)this.length / 200000000;
     }
-    System.out.println(this.latency);
+    //System.out.println(this.latency);
     //System.out.println(this.latency / 100000000);
   }
 

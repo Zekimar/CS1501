@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Comparator;
-import java.util.Stack;
+import java.util.ArrayList;
 
 class NetworkAnalysis{
   private static Graph g;
@@ -34,7 +34,7 @@ class NetworkAnalysis{
         }
         int speed = Integer.parseInt(parts[3]);
         int length = Integer.parseInt(parts[4]);
-        System.out.println(speed + " " + length + " " + end1 + " " + end2 + " " + isCopper);
+        //System.out.println(speed + " " + length + " " + end1 + " " + end2 + " " + isCopper);
         //Edge e = new Edge(isCopper, speed, length, end1, end2);
         graph[end1].add(new Edge(isCopper, speed, length, end2));
         graph[end2].add(new Edge(isCopper, speed, length, end1));
@@ -51,8 +51,8 @@ class NetworkAnalysis{
     int choice = -1;
     while (choice != 6){
       System.out.print("1: Lowest latency path\n2: determine copper-only connection\n" +
-      "3: Find maximum amount of data from vertex pair\n4: minimum average latency spanning tree\n" +
-      "5: determine connectedness\n6: exit\nSelect an option:");
+      "3: Find maximum bandwidth from vertex pair\n4: minimum average latency spanning tree\n" +
+      "5: determine if graph will be connected if any two points fail\n6: exit\nSelect an option:");
       choice = input.nextInt();
       switch(choice){
         case 1:
@@ -60,7 +60,10 @@ class NetworkAnalysis{
           int vertex1 = input.nextInt();
           System.out.println("Input vertex 2:");
           int vertex2 = input.nextInt();
-        break;
+          int bandwidth = g.lowestLatency(vertex1, vertex2);
+          //System.out.println("\n");
+          System.out.println("\nBandwidth: "+ bandwidth + "\n");
+          break;
         case 2:
           if (g.isCopperConnected()){
             System.out.println("\nThis graph is copper only connected\n");
@@ -69,6 +72,18 @@ class NetworkAnalysis{
           }
           break;
         case 3:
+          System.out.println("Input vertex 1:");
+          vertex1 = input.nextInt();
+          System.out.println("Input vertex 2:");
+          vertex2 = input.nextInt();
+          System.out.println("\nMax Bandwidth is: " + g.maxData(vertex1, vertex2) + "\n");
+          break;
+        case 4:
+          g.mst();
+          break;
+        case 5:
+          System.out.println("\n" + g.isBiconnected() + "\n");
+          break;
       }
     }
   }
