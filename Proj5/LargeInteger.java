@@ -1,6 +1,8 @@
 import java.util.Random;
 import java.math.BigInteger;
 
+//TODO: figure out how to multiply and go from there
+
 public class LargeInteger {
 
 	private final byte[] ONE = {(byte) 1};
