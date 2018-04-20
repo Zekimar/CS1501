@@ -192,8 +192,21 @@ public class LargeInteger {
 	 * @param other LargeInteger to multiply by this
 	 * @return product of this and other
 	 */
+
+  /*TODO: figure out what to do with each bit
+    i'm pretty sure these 2 loops are what you're supposed
+    to do, that's how multiplication works right?
+
+    need to account for overflow in byte multiplication
+    figure out where to put the overflow
+  */
 	public LargeInteger multiply(LargeInteger other) {
 		// YOUR CODE HERE (replace the return, too...)
+    for (int i = 0; i < val.length; i++){
+      for (int j = 0; j < other.val.length; j++){
+
+      }
+    }
 		return null;
 	}
 
@@ -206,6 +219,9 @@ public class LargeInteger {
 	 *   2:  a valid y value
 	 * such that this * x + other * y == GCD in index 0
 	 */
+
+   /*TODO: figure out how to find gcd of largeintegers
+   implement multiply first */
 	 public LargeInteger[] XGCD(LargeInteger other) {
 		// YOUR CODE HERE (replace the return, too...)
 		return null;
@@ -226,9 +242,14 @@ public class LargeInteger {
     Random rnd = new Random();
     LargeInteger x = new LargeInteger(512, rnd);
     LargeInteger y = new LargeInteger(512, rnd);
-    byte[] arr = x.getVal();
-    for (byte b: arr){
-      System.out.print(b);
-    }
+    byte a = 40;
+    byte b = 12;
+    short product2 = (short)(a * b);
+    byte overflow = (byte)(product2 >> 8);
+    byte res = (byte)product2;
+    System.out.println(" short: " + product2);
+    System.out.println("answer in bits: " + Integer.toBinaryString(480));
+    System.out.println(Byte.toString(overflow) + " " + Byte.toString(res));
+    System.out.println(Integer.toBinaryString(overflow) + " " + Integer.toBinaryString(res));
   }
 }
