@@ -226,5 +226,9 @@ public class LargeInteger {
     Random rnd = new Random();
     LargeInteger x = new LargeInteger(512, rnd);
     LargeInteger y = new LargeInteger(512, rnd);
+    byte[] arr = x.getVal();
+    for (byte b: arr){
+      System.out.print(b);
+    }
   }
 }
