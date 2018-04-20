@@ -246,7 +246,7 @@ public class LargeInteger {
     byte b = 12;
     short product2 = (short)(a * b);
     byte overflow = (byte)(product2 >> 8);
-    byte res = (byte)product2;
+    byte res = (byte)(product2);
     System.out.println(" short: " + product2);
     System.out.println("answer in bits: " + Integer.toBinaryString(480));
     System.out.println(Byte.toString(overflow) + " " + Byte.toString(res));
